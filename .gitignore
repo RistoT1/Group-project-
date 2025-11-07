@@ -1,0 +1,48 @@
+# Composer dependencies (in root)
+vendor/
+
+# Environment files (in /backend)
+backend/.env
+backend/.env.local
+backend/.env.*.local
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IDE/editor configs
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+*.iml
+nbproject/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.cache
+*.bak
+*.swp
+*.swo
+
+# PHPUnit
+.phpunit.result.cache
+
+# Postman collections and environments
+*.postman_collection.json
+*.postman_environment.json
+
+# Uploaded or generated files
+uploads/
+storage/
+build/
+dist/
+
+# Node modules (if using frontend tools)
+node_modules/
+
+# Misc
+*.zip
+*.tar.gz
+*.7z
