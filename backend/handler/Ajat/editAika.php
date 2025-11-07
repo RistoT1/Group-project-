@@ -2,8 +2,7 @@
 function editAika($pdo, $input)
 {
     $results = [];
-
-    // If batch: loop through each item in 'ajat'
+    // Batch update
     if (isset($input['ajat']) && is_array($input['ajat'])) {
         foreach ($input['ajat'] as $aika) {
             $results[] = editAika($pdo, $aika); // Recursive call for each slot
@@ -28,7 +27,6 @@ function editAika($pdo, $input)
             return ["success" => false, "message" => "Aikaa ei löytynyt"];
         }
 
-        // Allow changes to time and Tila only
         if (isset($input['AloitusAika']) && $input['AloitusAika'] !== $current['AloitusAika']) {
             $updates['AloitusAika'] = trim($input['AloitusAika']);
         }

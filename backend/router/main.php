@@ -16,11 +16,15 @@ require_once "../handler/Luokat/deleteLuokka.php";
 require_once "../handler/Ajat/getAjat.php";
 require_once "../handler/Ajat/addAika.php";
 require_once "../handler/Ajat/editAika.php";
+//varaukset
+require_once "../handler/Varaus/getVaraukset.php";
+require_once "../handler/Varaus/addVaraus.php";
+require_once "../handler/Varaus/cancelVaraus.php";
+require_once "../handler/Varaus/getKayttajaVaraukset.php";
 //kirjautuminen
 require_once "../handler/Auth/kirjaudu.php";
 //autentikointi (admin/user)
 require_once "../handler/Auth/auth.php";
-
 
 $routes = [
     'GET' => [
@@ -30,20 +34,22 @@ $routes = [
         'ajat' => 'getAjat'
     ],
     'POST' => [
-        //käyttäjät
+        // käyttäjät
         'addKayttaja' => 'addKayttaja',
         'editKayttaja' => 'editKayttaja',
         'deleteKayttaja' => 'deleteKayttaja',
-        //luokka
+        // luokat
         'addLuokka' => 'addLuokka',
         'editLuokka' => 'editLuokka',
         'deleteLuokka' => 'deleteLuokka',
-        //varaus
+        // varaukset
+        'kayttajaVaraukset' => 'getkayttajaVaraukset',
         'addVaraus' => 'addVaraus',
-        //ajat
+        'cancelVaraus' => 'cancelVaraus',
+        // ajat
         'addAika' => 'addAika',
         'editAika' => 'editAika',
-        //kirjautuminen
+        // kirjautuminen
         'kirjaudu' => 'kirjaudu'
     ]
 ];
@@ -53,7 +59,15 @@ $adminOnlyRoutes = [
     'POST' => ['addKayttaja', 'deleteKayttaja', 'addAika', 'addLuokka', 'editLuokka']
 ];
 
-$publicRoutes = ['kirjaudu','getLuokat','getAjat'];
+$publicRoutes = [
+    'kirjaudu',
+    'getLuokat',
+    'getAjat',
+    'getVaraukset',
+    'getkayttajaVaraukset',
+    'addVaraus',
+    'cancelVaraus'
+];
 
 $method = $_SERVER['REQUEST_METHOD'];
 $input = $method === 'POST'
