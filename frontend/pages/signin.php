@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="../styles/pages/signin.css">
+    <link rel="stylesheet" href="../styles/root.css">
     <title>Kirjaudu sisään</title>
 </head>
 
@@ -17,10 +18,10 @@
             </div>
             <div class="card-right">
                 <div>
-                    <form id="sigin-form" action="#" method="#">
-                        <label for="user">Käyttäjätunnus</label>
+                    <form id="sigin-form">
+                        <label for="sahkoposti">Käyttäjätunnus</label>
                         <input type="email" name="sahkoposti" placeholder="Sähköposti" required />
-                        <label for="pwd">Salasana</label>
+                        <label for="salasana">Salasana</label>
                         <input type="password" name="salasana" placeholder="Salasana" required />
                         <button type="submit">Kirjaudu</button>
                     </form>
@@ -28,6 +29,7 @@
                 </div>
             </div>
         </div>
+    </div>
 </body>
 <script type="module" src="./../scripts/pages/signinPage.js"></script>
 

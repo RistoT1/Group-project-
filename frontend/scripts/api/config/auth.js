@@ -1,7 +1,7 @@
 
 
 function getToken() {
-    return localStorage.getItem("JWT_TOKEN");
+    return localStorage.getItem("jwt_token");
 }
  
 function setToken(token) {
@@ -12,4 +12,4 @@ function clearToken() {
   localStorage.removeItem("jwt_token");
 }
 
-export { API_BASE_URL, getToken, setToken, clearToken };
+export {getToken, setToken, clearToken };
