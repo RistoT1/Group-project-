@@ -7,7 +7,8 @@
 </head>
 <body>
     <div class="luokka-container" id="luokkaContainner">
-        
+
     </div>
+    <script type="module" src="../scripts/pages/Luokka.js"></script>
 </body>
 </html>

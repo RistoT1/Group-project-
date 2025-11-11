@@ -16,6 +16,7 @@ require_once "../handler/Varaus/addVaraus.php";
 require_once "../handler/Varaus/cancelVaraus.php";
 require_once "../handler/Varaus/getKayttajaVaraukset.php";
 require_once "../handler/Auth/kirjaudu.php";
+require_once "../handler/Luokat/getLuokkatID.php";
 require_once "../handler/Auth/auth.php"; // tarkistaAuth()
 require_once "../handler/Ajat/getAikaValues.php"; 
 
@@ -24,7 +25,7 @@ $routes = [
         'kayttajat' => 'getKayttajat',
         'luokat' => 'getLuokat',
         'varaukset' => 'getVaraukset',
-        'aikavalues' => 'getAikaValues'//helpperi aikojen  renderöintiin
+        'aikavalues' => 'getAikaValues',//helpperi aikojen  renderöintiin
     ],
     'POST' => [
         'kirjaudu' => 'kirjaudu',
@@ -36,6 +37,7 @@ $routes = [
         'deleteLuokka' => 'deleteLuokka',
         'addVaraus' => 'addVaraus',
         'cancelVaraus' => 'cancelVaraus',
+        'getLuokatID' => 'getLuokatID',
         'kayttajaVaraukset' => 'getkayttajaVaraukset'
     ]
 ];
