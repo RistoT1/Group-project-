@@ -11,16 +11,13 @@ require_once "../handler/Luokat/getLuokat.php";
 require_once "../handler/Luokat/addLuokka.php";
 require_once "../handler/luokat/editLuokka.php";
 require_once "../handler/Luokat/deleteLuokka.php";
-require_once "../handler/Ajat/getAjat.php";
-require_once "../handler/Ajat/addAika.php";
-require_once "../handler/Ajat/editAika.php";
 require_once "../handler/Varaus/getVaraukset.php";
 require_once "../handler/Varaus/addVaraus.php";
 require_once "../handler/Varaus/cancelVaraus.php";
 require_once "../handler/Varaus/getKayttajaVaraukset.php";
 require_once "../handler/Auth/kirjaudu.php";
 require_once "../handler/Auth/auth.php"; // tarkistaAuth()
-require_once "../handler/Ajat/getAikaValues.php";
+require_once "../handler/Ajat/getAikaValues.php"; 
 
 $routes = [
     'GET' => [
@@ -37,8 +34,6 @@ $routes = [
         'addLuokka' => 'addLuokka',
         'editLuokka' => 'editLuokka',
         'deleteLuokka' => 'deleteLuokka',
-        'addAika' => 'addAika',
-        'editAika' => 'editAika',
         'addVaraus' => 'addVaraus',
         'cancelVaraus' => 'cancelVaraus',
         'kayttajaVaraukset' => 'getkayttajaVaraukset'
