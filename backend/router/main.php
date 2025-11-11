@@ -105,7 +105,7 @@ try {
                 ? $handler($pdo, $input)
                 : $handler($pdo);
 
-            echo json_encode($result);
+            echo json_encode($result,JSON_UNESCAPED_UNICODE);
             $handled = true;
             break;
         }

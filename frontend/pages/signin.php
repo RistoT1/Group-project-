@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="frontend\styles\pages\signin.css">
+    <link rel="stylesheet" type="text/css" href="../styles/pages/signin.css">
+    <link rel="stylesheet" href="../styles/root.css">
     <title>Kirjaudu sisään</title>
 </head>
+
 <body>
     <div class="login-cont">
         <div class="card">
@@ -14,16 +17,20 @@
                 <p>Filler filler filler filler filler</p>
             </div>
             <div class="card-right">
-                <div class form="login-form">
-                    <form action="#" method="#">
-                        <label for="user">Käyttäjätunnus</label>
-                        <input type="text" name="user" required>
-                        <label for="pwd">Salasana</label>
-                        <input type="password" name="pwd" required>
-                        <button type="submit">Kirjaudu sisään</button>
+                <div>
+                    <form id="sigin-form">
+                        <label for="sahkoposti">Käyttäjätunnus</label>
+                        <input type="email" name="sahkoposti" placeholder="Sähköposti" required />
+                        <label for="salasana">Salasana</label>
+                        <input type="password" name="salasana" placeholder="Salasana" required />
+                        <button type="submit">Kirjaudu</button>
                     </form>
+
+                </div>
             </div>
         </div>
     </div>
 </body>
+<script type="module" src="./../scripts/pages/signinPage.js"></script>
+
 </html>

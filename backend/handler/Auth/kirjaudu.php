@@ -42,7 +42,8 @@ function kirjaudu($pdo, $input) {
                 "nimi" => $kayttaja['Nimi'],
                 "sukunimi" => $kayttaja['Sukunimi'],
                 "sahkoposti" => $kayttaja['Sähköposti'],
-                "puhelin" => $kayttaja['Puhelinnumero']
+                "puhelin" => $kayttaja['Puhelinnumero'],
+                "rooli" => $kayttaja['Rooli']
             ]
         ];
     } else {
