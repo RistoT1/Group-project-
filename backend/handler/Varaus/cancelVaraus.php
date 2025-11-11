@@ -12,14 +12,8 @@ function cancelVaraus($pdo, $input)
         if ($stmt->rowCount() === 0) {
             return ["success" => false, "message" => "Varausta ei löydetty"];
         }
-        $stmt = $pdo->prepare("UPDATE varattavatajat vt
-                               JOIN varaukset v ON vt.AikaID = v.AikaID
-                               SET vt.Tila = 'peruttu'
-                               WHERE v.VarausID = ?");
-        $stmt->execute([$varausID]);
-
-        $stmt = $pdo->prepare("DELETE FROM varaukset WHERE VarausID = ?");
-        $stmt->execute([$varausID]);
+        $stmt = $pdo->prepare("UPDATE varaukset SET Tila = ? WHERE VarausID = ?");
+        $stmt->execute(['peruttu', $varausID]);
 
         return ["success" => true, "message" => "Varaus peruttu onnistuneesti"];
     } catch (PDOException $e) {
