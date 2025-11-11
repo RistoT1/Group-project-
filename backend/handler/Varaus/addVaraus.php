@@ -1,37 +1,53 @@
 <?php
 function addVaraus($pdo, $input)
 {
-    if (empty($input['KayttajaID']) || empty($input['AikaID'])) {
-        return ["success" => false, "message" => "KayttajaID ja AikaID vaaditaan"];
+    if (empty($input['KayttajaID']) || empty($input['LuokkaID'])) {
+        return ["success" => false, "message" => "KayttajaID ja LuokkaID vaaditaan"];
     }
 
     $KayttajaID = (int) $input['KayttajaID'];
-    $AikaID = (int) $input['AikaID'];
+    $LuokkaID = (int) $input['LuokkaID'];
+    $Paivamaara = trim($input['Paivamaara'] ?? '');
+    $AloitusAika = trim($input['AloitusAika'] ?? '');
+    $LopetusAika = trim($input['LopetusAika'] ?? '');
     $Tarkoitus = isset($input['Tarkoitus']) ? trim($input['Tarkoitus']) : null;
 
     try {
-        $queries = [
-            "SELECT 1 FROM kayttajat WHERE KayttajaID = ?",
-            "SELECT 1 FROM varattavatajat WHERE AikaID = ? AND Tila = 'vapaa' or Tila='peruttu'"
-        ];
-        $params = [$KayttajaID, $AikaID];
-        $errors = ["Käyttäjää ei löydetty", "Aikaa ei löydetty tai se ei ole vapaa"];
-        foreach ($queries as $index => $query) {
-            $stmt = $pdo->prepare($query);
-            $stmt->execute([$params[$index]]);
-            if ($stmt->fetchColumn() === false) {
-                return ["success" => false, "message" => $errors[$index]];
-            }
+        // 1️⃣ Check for overlapping active reservations (ignore 'peruttu')
+        $overlapStmt = $pdo->prepare("
+            SELECT COUNT(*) 
+            FROM varaukset
+            WHERE LuokkaID = ?
+              AND Paivamaara = ?
+              AND Tila != 'peruttu'
+              AND (
+                    (AloitusAika < ? AND LopetusAika > ?)  -- overlap
+                  )
+        ");
+        $overlapStmt->execute([$LuokkaID, $Paivamaara, $LopetusAika, $AloitusAika]);
+        $overlapCount = $overlapStmt->fetchColumn();
+
+        if ($overlapCount > 0) {
+            return ["success" => false, "message" => "Tämä aika on jo varattu."];
         }
 
-        $stmt = $pdo->prepare("INSERT INTO varaukset (KayttajaID, AikaID,Tarkoitus) VALUES (?, ?,?)");
-        $stmt->execute([$KayttajaID, $AikaID, $Tarkoitus]);
+        $stmt = $pdo->prepare("
+            INSERT INTO varaukset 
+                (KayttajaID, LuokkaID, Paivamaara, AloitusAika, LopetusAika, Tarkoitus, Tila) 
+            VALUES (?, ?, ?, ?, ?, ?, 'varattu')
+        ");
+        $stmt->execute([$KayttajaID, $LuokkaID, $Paivamaara, $AloitusAika, $LopetusAika, $Tarkoitus]);
 
-        $stmt = $pdo->prepare("UPDATE varattavatajat SET Tila = 'varattu' WHERE AikaID = ?");
-        $stmt->execute([$AikaID]);
+        if ($stmt->rowCount() === 0) {
+            return ["success" => false, "message" => "Varauksen lisääminen epäonnistui"];
+        }
 
-        return ["success" => true, "message" => "Varaus lisätty onnistuneesti"];
+        return ["success" => true, "message" => "Varaus lisätty onnistuneesti", "VarausID" => $pdo->lastInsertId()];
+
     } catch (PDOException $e) {
+        if ($e->getCode() == "23000") {
+            return ["success" => false, "message" => "Tietoja ei ole olemassa tietokannassa."];
+        }
         return ["success" => false, "message" => "Tietokantavirhe: " . $e->getMessage()];
     }
 }

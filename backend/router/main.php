@@ -2,71 +2,47 @@
 header("Content-Type: application/json");
 
 require_once "../config/config.php";
-//kayttajat
+// handlerit
 require_once "../handler/Kayttajat/getKayttajat.php";
 require_once "../handler/Kayttajat/addKayttaja.php";
 require_once "../handler/Kayttajat/deleteKayttaja.php";
 require_once "../handler/Kayttajat/editKayttaja.php";
-//luokat
 require_once "../handler/Luokat/getLuokat.php";
 require_once "../handler/Luokat/addLuokka.php";
 require_once "../handler/luokat/editLuokka.php";
 require_once "../handler/Luokat/deleteLuokka.php";
-//ajat
-require_once "../handler/Ajat/getAjat.php";
-require_once "../handler/Ajat/addAika.php";
-require_once "../handler/Ajat/editAika.php";
-//varaukset
 require_once "../handler/Varaus/getVaraukset.php";
 require_once "../handler/Varaus/addVaraus.php";
 require_once "../handler/Varaus/cancelVaraus.php";
 require_once "../handler/Varaus/getKayttajaVaraukset.php";
-//kirjautuminen
 require_once "../handler/Auth/kirjaudu.php";
-//autentikointi (admin/user)
-require_once "../handler/Auth/auth.php";
+require_once "../handler/Auth/auth.php"; // tarkistaAuth()
+require_once "../handler/Ajat/getAikaValues.php"; 
 
 $routes = [
     'GET' => [
         'kayttajat' => 'getKayttajat',
         'luokat' => 'getLuokat',
         'varaukset' => 'getVaraukset',
-        'ajat' => 'getAjat'
+        'aikavalues' => 'getAikaValues'//helpperi aikojen  renderöintiin
     ],
     'POST' => [
-        // käyttäjät
+        'kirjaudu' => 'kirjaudu',
         'addKayttaja' => 'addKayttaja',
         'editKayttaja' => 'editKayttaja',
         'deleteKayttaja' => 'deleteKayttaja',
-        // luokat
         'addLuokka' => 'addLuokka',
         'editLuokka' => 'editLuokka',
         'deleteLuokka' => 'deleteLuokka',
-        // varaukset
-        'kayttajaVaraukset' => 'getkayttajaVaraukset',
         'addVaraus' => 'addVaraus',
         'cancelVaraus' => 'cancelVaraus',
-        // ajat
-        'addAika' => 'addAika',
-        'editAika' => 'editAika',
-        // kirjautuminen
-        'kirjaudu' => 'kirjaudu'
+        'kayttajaVaraukset' => 'getkayttajaVaraukset'
     ]
 ];
 
 $adminOnlyRoutes = [
     'GET' => ['kayttajat'],
     'POST' => ['addKayttaja', 'deleteKayttaja', 'addAika', 'addLuokka', 'editLuokka']
-];
-
-$publicRoutes = [
-    'kirjaudu',
-    'getLuokat',
-    'getAjat',
-    'getVaraukset',
-    'getkayttajaVaraukset',
-    'addVaraus',
-    'cancelVaraus'
 ];
 
 $method = $_SERVER['REQUEST_METHOD'];
@@ -90,22 +66,25 @@ try {
             }
 
             $decoded = null;
-            if (!in_array($param, $publicRoutes)) {
-                $decoded = tarkistaAuth();
-                $role = $decoded->role ?? 'user';
 
-                if (in_array($param, $adminOnlyRoutes[$method] ?? []) && $role !== 'ylläpitäjä') {
+            // kaikki paitsi kirjaudu vaatii autentikoinnin
+            if ($param !== 'kirjaudu') {
+                $decoded = tarkistaAuth();
+
+                //admin reittien tarkistus
+                if (in_array($param, $adminOnlyRoutes[$method] ?? []) && ($decoded->role ?? 'user') !== 'ylläpitäjä') {
                     http_response_code(403);
                     echo json_encode(["success" => false, "message" => "Ei käyttöoikeutta"]);
                     exit;
                 }
             }
 
+            // Kutsu käsittelijää 
             $result = $method === 'POST'
-                ? $handler($pdo, $input)
-                : $handler($pdo);
+                ? $handler($pdo, $input, $decoded)
+                : $handler($pdo, $decoded);
 
-            echo json_encode($result,JSON_UNESCAPED_UNICODE);
+            echo json_encode($result, JSON_UNESCAPED_UNICODE);
             $handled = true;
             break;
         }

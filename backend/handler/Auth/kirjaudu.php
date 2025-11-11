@@ -28,7 +28,7 @@ function kirjaudu($pdo, $input) {
             'email' => $kayttaja['Sähköposti'],
             'role' => $kayttaja['Rooli'] ?? 'user',
             'iat' => time(),
-            'exp' => time() + 3600
+            'exp' => time() + 7200
         ];
 
         $jwt = JWT::encode($payload, $_ENV['JWT_SECRET'], 'HS256');

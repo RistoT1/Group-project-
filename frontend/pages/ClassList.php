@@ -36,17 +36,19 @@
                 </select>
 
                 <label for="Time-Select">Hae ajalla</label>
-                <input type="time" id="startTime" /> -
-                <input type="time" id="endTime" />
+                <input type="time" id="startTimeInput" />
+                <input type="time" id="endTimeInput" />
+                <input type="date" id="dateInput"/>
 
                 <button id="applyFiltersBtn">Suodata</button>
             </div>
             <div class="class-list" id="classList">
-
+                <!-- Luokkat lisätään tähän dynaamisesti -->
             </div>
         </section>
     </main>
 </body>
 
-<script type="module" src="../scripts/pages/ClassListPage.js"></script>
+<script type="module" src="../scripts/pages/ClassListPage.js" defer></script>
+
 </html>
