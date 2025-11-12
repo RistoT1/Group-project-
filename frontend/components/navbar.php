@@ -1,7 +1,7 @@
 <nav class="nav-container">
     <div class="nav-logo-container">
         <div class="nav-logo">
-            <a href="./UserDashboard.php">Luokkavaraus</a>
+            <a href="./ClassList.php">Luokkavaraus</a>
         </div>
     </div>
 

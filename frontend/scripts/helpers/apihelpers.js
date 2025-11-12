@@ -22,6 +22,7 @@ export const loadTakenTimes = async () => {
     };
     try {
         const response = await apiRequest("?varaukset=true", payload);
+        console.log(response.data);
         return response.data;
     } catch (error) {
         console.error("Virhe aikojen lataamisessa:", error);
@@ -43,6 +44,7 @@ export const loadLuokka = async (id) => {
     };
     try {
         const response = await apiRequest("", payload);
+        console.log(response.data);
         return response.data;
     } catch (error) {
         console.error("Virhe aikojen lataamisessa:", error);
