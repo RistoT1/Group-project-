@@ -1,4 +1,4 @@
-import { loadClasses,loadTakenTimes } from "../helpers/apihelpers.js";
+import { loadClasses, loadTakenTimes } from "../helpers/apihelpers.js";
 class classListPage {
     constructor() {
         this.takenTimes = [];
@@ -11,6 +11,8 @@ class classListPage {
             startTimeInput: document.getElementById("startTimeInput"),
             endTimeInput: document.getElementById("endTimeInput"),
             dateInput: document.getElementById("dateInput"),
+            searchBar: document.getElementById("haku"),
+            resetBtn: document.getElementById("resetFilters")
         };
 
         for (const key in this.DOM) {
@@ -41,6 +43,26 @@ class classListPage {
 
     addEventListeners() {
         this.DOM.filterBtn.addEventListener("click", () => this.applyFilters());
+        this.DOM.searchBar.addEventListener("input", (e) => this.filterByName(e.target.value));
+        this.DOM.resetBtn.addEventListener("click", () => this.resetFilters());
+    }
+
+    filterByName(haku) {
+        const searchTerm = haku.toLowerCase();
+        this.haku = this.Luokat.filter(luokka =>
+            luokka.Nimi.toLowerCase().split(" ").slice(1).join(" ").startsWith(searchTerm)
+        );
+        this.renderClasses(this.haku);
+    }
+    resetFilters() {
+        this.DOM.buildingSelect.value = 'all';
+        this.DOM.capacitySelect.value = '0';
+        this.DOM.startTimeInput.value = '';
+        this.DOM.endTimeInput.value = '';
+        this.DOM.dateInput.value = new Date().toISOString().split('T')[0];
+        this.DOM.searchBar.value = '';
+        this.haku = [];
+        this.renderClasses(this.Luokat);
     }
 
     applyFilters() {
@@ -91,7 +113,7 @@ class classListPage {
         console.log("filtered", filtered);
         this.renderClasses(filtered);
     }
-   
+
 
     renderClasses(classes) {
         // Clear existing content before rendering

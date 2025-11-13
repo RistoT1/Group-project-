@@ -1,3 +1,8 @@
+<?php
+// Get the current page name
+$currentPage = basename($_SERVER['PHP_SELF']);
+?>
+
 <nav class="nav-container">
     <div class="nav-logo-container">
         <div class="nav-logo">
@@ -13,8 +18,8 @@
 
     <div class="nav-links-container">
         <div class="nav-links">
-            <a href="./UserDashboard.php" class="selected-link">Varaa luokka</a>
-            <a href="">Omat Varaukset</a>
+            <a href="./ClassList.php" class="<?php echo ($currentPage == 'ClassList.php') ? 'selected-link' : ''; ?>">Varaa luokka</a>
+            <a href="./OmatVaraukset.php" class="<?php echo ($currentPage == 'OmatVaraukset.php') ? 'selected-link' : ''; ?>">Omat Varaukset</a>
         </div>
         <div class="profile-container">
             <div class="logout-btn-container">
@@ -26,4 +31,5 @@
         </div>
     </div>
 </nav>
+
 <script src="../scripts/components/nav.js"></script>

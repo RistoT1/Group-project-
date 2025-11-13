@@ -1,12 +1,9 @@
 <?php
-function getKayttajaVaraukset($pdo, $data)
+function getKayttajaVaraukset($pdo,$decodedToken)
 {
-    if (empty($data['KayttajaID'])) {
-        return ["success" => false, "message" => "kayttajaId is required"];
-    }
+    $KayttajaID = (int) $decodedToken->sub;
 
     try {
-        $KayttajaID = $data['KayttajaID'];
 
         $stmt = $pdo->prepare("SELECT * FROM varaukset WHERE KayttajaID = ?");
         $stmt->execute([$KayttajaID]);

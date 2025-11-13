@@ -23,6 +23,7 @@ class SigninPage {
             const response = await loginRequest(payload)
             if (response.success) {
                 setToken(response.token);
+                
                 console.log("Kirjautuminen onnistui", response);
                 response.data.rooli === 'ylläpitäjä' ?
                     window.location.href = "./adminDashboard.php" :

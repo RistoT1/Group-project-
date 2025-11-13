@@ -1,13 +1,14 @@
-import { loadLuokka, loadTakenTimes } from "../helpers/apihelpers.js";
+import { loadLuokka, GetVarauksetByLuokka, lisaaVaraus } from "../helpers/apihelpers.js";
 
 class Luokka {
-    constructor(startTime = "08:30:00", endTime = "17:30:00", incremet="00:30:00") {
+    constructor(startTime = "08:30:00", endTime = "17:30:00", incremet = "01:00:00") {
         this.startTime = startTime;
         this.endTime = endTime;
         this.increment = incremet;
 
         this.luokkaData = null; //Luokan tiedot
         this.takenTimes = []; //varatut ajat
+        this.LuokkaID = null;
         this.currentWeekStart = this.getStartOfWeek(new Date()); // viiikkojen navigointiin
         this.numberOfDays = this.getNumberOfDays(); // jos mobiilissa renderöi rivit 3 + 2 
 
@@ -23,10 +24,10 @@ class Luokka {
 
     async init() {
         const urlParams = new URLSearchParams(window.location.search);
-        const luokkaID = urlParams.get('id');
+        this.LuokkaID = urlParams.get('id');
 
-        this.luokkaData = await loadLuokka(luokkaID);
-        this.takenTimes = await loadTakenTimes(luokkaID);
+        this.luokkaData = await loadLuokka(this.LuokkaID);
+        this.takenTimes = await GetVarauksetByLuokka(this.LuokkaID);
 
         this.renderPage();
         this.addEventListeners();
@@ -62,13 +63,13 @@ class Luokka {
         const slots = [];
         let [hours, minutes] = this.startTime.split(':').map(Number); //aloitus tunnit ja minuutit 
         const [endHours, endMinutes] = this.endTime.split(':').map(Number);// lopetus tunnit ja minuutit 
-        let [incrementHours ,incrementMinutes] = this.increment.split(':').map(Number);
+        let [incrementHours, incrementMinutes] = this.increment.split(':').map(Number);
 
         //jos tunnit yli tai minuutit yli 
         while (hours < endHours || (hours === endHours && minutes < endMinutes)) {
             //tarkistaa onhan tunnit ja minuutit kaksi numeroa ja korjaa ne jos ei ole
             // 00 ja 00
-            const hh = String(hours).padStart(2, '0'); 
+            const hh = String(hours).padStart(2, '0');
             const mm = String(minutes).padStart(2, '0');
             slots.push(`${hh}:${mm}`);
             hours += incrementHours;
@@ -81,6 +82,7 @@ class Luokka {
 
         return slots;
     }
+
     getEquipmentIcon(equipmentName) {
         const icons = {
             "projektori": "fa-solid fa-video",
@@ -108,7 +110,7 @@ class Luokka {
         <div class="luokka-grid">
             <div class="div1">
                 <div class="img-container">
-                    <img src="../assets/ClassroomPlaceholder.jpg" alt="${luokka.Nimi}">
+                    <img src="../assets/123.jpg" alt="${luokka.Nimi}">
                 </div>
             </div>
             <div class="div2">
@@ -190,6 +192,7 @@ class Luokka {
 
         return html;
     }
+
     renderCalendarGroup(datesGroup, timeSlots, isMobile) {
         // Day names in short or long format
         const dayNames = isMobile
@@ -218,10 +221,17 @@ class Luokka {
             let row = `<div class="grid-row"><div class="time-label">${time}</div>`;
             datesGroup.forEach(date => {
                 const dateStr = date.toISOString().split('T')[0];
+
+                // lisätään sekunnit vertauksen toimivuuden vuoksi
+                const timeWithSeconds = `${time}:00`;
+
                 const booked = this.takenTimes.find(
-                    t => t.Paivamaara === dateStr && t.AloitusAika <= time && t.LopetusAika > time
+                    t => t.Paivamaara === dateStr
+                        && t.AloitusAika <= timeWithSeconds
+                        && t.LopetusAika > timeWithSeconds
+                        && t.Tila !== "peruttu"
                 );
-                row += `<div class="slot ${booked ? 'disabled' : 'vapaa'}">${booked ? 'varattu' : 'Vapaa'}</div>`;
+                row += `<div class="slot ${booked ? 'disabled' : 'vapaa'}" data-date="${dateStr}">${booked ? 'varattu' : 'Vapaa'}</div>`;
             });
             row += '</div>';
             return row;
@@ -236,18 +246,53 @@ class Luokka {
         // Slot selection
         document.querySelectorAll('.slot.vapaa').forEach(slot => {
             slot.addEventListener('click', e => {
+                // Remove previous selection
                 document.querySelectorAll('.slot.valittu').forEach(s => s.classList.remove('valittu'));
                 e.currentTarget.classList.add('valittu');
 
+                // Get start time from clicked slot (e.g. "09:00")
                 const timeLabel = e.currentTarget.parentElement.querySelector('.time-label').textContent;
-                const dayIndex = Array.from(e.currentTarget.parentElement.children).indexOf(e.currentTarget) - 1;
-                const bookingDate = this.getWeekDates()[dayIndex];
-                const dayName = bookingDate.toLocaleDateString('fi-FI', { weekday: 'long' });
+                const [hours, minutes] = timeLabel.split(':').map(Number);
 
+                // Parse increment string (e.g. "01.00.00" or "00.30.00")
+                const parts = this.increment.split(':').map(Number);
+                const incHours = parts[0] || 0;
+                const incMinutes = parts[1] || 0;
+                const incSeconds = parts[2] || 0;
+
+                // Compute total seconds
+                let totalSeconds =
+                    (hours * 3600) +
+                    (minutes * 60) +
+                    (incHours * 3600) +
+                    (incMinutes * 60) +
+                    incSeconds;
+
+                // Handle wrap around midnight
+                const wrapsNextDay = totalSeconds >= 24 * 3600;
+                if (wrapsNextDay) totalSeconds -= 24 * 3600;
+
+                const endHours = Math.floor(totalSeconds / 3600);
+                const endMinutes = Math.floor((totalSeconds % 3600) / 60);
+                const endTime = `${String(endHours).padStart(2, '0')}:${String(endMinutes).padStart(2, '0')}`;
+
+                const fullDate = e.currentTarget.dataset.date;
+                let bookingDate = new Date(fullDate);
+
+                // If we wrapped past midnight, move booking end date to next day
+                if (wrapsNextDay) {
+                    bookingDate.setDate(bookingDate.getDate() + 1);
+                }
+
+                // Update booking info display
+                const dayName = bookingDate.toLocaleDateString('fi-FI', { weekday: 'long' });
                 document.getElementById('bookingDate').textContent = dayName;
-                document.getElementById('bookingTime').textContent = timeLabel;
+                document.getElementById('bookingDate').dataset.fullDate = bookingDate.toISOString().split('T')[0];
+                document.getElementById('bookingTime').textContent = `${timeLabel}–${endTime}`;
+
             });
         });
+
 
         // Week navigation
         document.getElementById('prevWeek').addEventListener('click', () => {
@@ -263,19 +308,66 @@ class Luokka {
         });
 
         // Booking button
-        document.getElementById('bookButton').addEventListener('click', () => {
-            const reason = document.getElementById('reasonInput').value;
-            const selectedDate = document.getElementById('bookingDate').textContent;
+        document.getElementById('bookButton').addEventListener('click', async () => {
+            // Get input values
+            const reason = document.getElementById('reasonInput').value.trim();
+            const selectedDate = document.getElementById('bookingDate').dataset.fullDate;
             const selectedTime = document.getElementById('bookingTime').textContent;
 
+            // Validation
             if (!reason || selectedTime === 'Valitse aika') {
                 alert('Täytä kaikki tiedot ennen varausta!');
                 return;
             }
 
-            console.log('Booking:', { selectedDate, selectedTime, reason });
-            // TODO: Send booking data to API
+            // Split time into start and end
+            const [startTime, endTime] = selectedTime.split('–');
+
+            // Helper to convert HH:MM -> HH:MM:SS for SQL
+            function formatTime(timeStr) {
+                const [h, m] = timeStr.split(':').map(Number);
+                const hh = String(h).padStart(2, '0');
+                const mm = String(m).padStart(2, '0');
+                const ss = '00'; // default seconds
+                return `${hh}:${mm}:${ss}`;
+            }
+
+            const startTimeSql = formatTime(startTime);
+            const endTimeSql = formatTime(endTime);
+
+            console.log(endTimeSql);
+
+            console.log(this.LuokkaID);
+            const data = await lisaaVaraus(this.LuokkaID, selectedDate, startTimeSql, endTimeSql, reason);
+            console.log(data);
+
+            // Update the specific slot instead of re-rendering
+            const selectedSlot = document.querySelector('.slot.valittu');
+            if (selectedSlot) {
+                selectedSlot.classList.remove('vapaa', 'valittu');
+                selectedSlot.classList.add('disabled');
+                selectedSlot.textContent = 'varattu';
+                // Remove click listener
+                selectedSlot.replaceWith(selectedSlot.cloneNode(true));
+            }
+
+            // Add new booking to takenTimes array
+            this.takenTimes.push({
+                Paivamaara: selectedDate,
+                AloitusAika: startTime,
+                LopetusAika: endTime,
+                Tarkoitus: reason
+            });
+
+            // Reset booking form
+            document.getElementById('bookingDate').textContent = 'Valitse aika';
+            document.getElementById('bookingDate').dataset.fullDate = '';
+            document.getElementById('bookingTime').textContent = 'Valitse aika';
+            document.getElementById('reasonInput').value = '';
+
+            alert('Varaus onnistui!');
         });
+
     }
 }
 
