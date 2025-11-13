@@ -1,14 +1,15 @@
 import { loadLuokka, loadTakenTimes } from "../helpers/apihelpers.js";
 
 class Luokka {
-    constructor(startTime = "08:30:00", endTime = "17:30:00") {
+    constructor(startTime = "08:30:00", endTime = "17:30:00", incremet="00:30:00") {
         this.startTime = startTime;
         this.endTime = endTime;
+        this.increment = incremet;
 
-        this.luokkaData = null;
-        this.takenTimes = [];
-        this.currentWeekStart = this.getStartOfWeek(new Date());
-        this.numberOfDays = this.getNumberOfDays();
+        this.luokkaData = null; //Luokan tiedot
+        this.takenTimes = []; //varatut ajat
+        this.currentWeekStart = this.getStartOfWeek(new Date()); // viiikkojen navigointiin
+        this.numberOfDays = this.getNumberOfDays(); // jos mobiilissa renderöi rivit 3 + 2 
 
         // Update number of days on resize
         window.addEventListener('resize', () => {
@@ -32,13 +33,18 @@ class Luokka {
     }
 
     getNumberOfDays() {
-        return window.innerWidth < 768 ? 3 : 5; // 3 days mobile, 5 desktop
+        return window.innerWidth < 768 ? 3 : 5; //puhelimella 3 päivää rivissä
     }
 
     getStartOfWeek(date) {
         const d = new Date(date);
-        const day = d.getDay(); // Sunday = 0
-        const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Monday = first day
+        const day = d.getDay(); // sunnuntai = 0
+        const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Laskee ekan päivän maanantaiksi
+        //keskiviikko = 3 
+        // päivämäärä 12
+        // päivämäärä - 3 = 9 = sunnuntai + 1
+        //maanantai  10
+        //jos päivä olisi sunnuntai(0): -6 jotta saadaan kyseisen viikon maanantai
         return new Date(d.setDate(diff));
     }
 
@@ -54,14 +60,19 @@ class Luokka {
 
     getTimeSlots() {
         const slots = [];
-        let [hours, minutes] = this.startTime.split(':').map(Number);
-        const [endHours, endMinutes] = this.endTime.split(':').map(Number);
+        let [hours, minutes] = this.startTime.split(':').map(Number); //aloitus tunnit ja minuutit 
+        const [endHours, endMinutes] = this.endTime.split(':').map(Number);// lopetus tunnit ja minuutit 
+        let [incrementHours ,incrementMinutes] = this.increment.split(':').map(Number);
 
+        //jos tunnit yli tai minuutit yli 
         while (hours < endHours || (hours === endHours && minutes < endMinutes)) {
-            const hh = String(hours).padStart(2, '0');
+            //tarkistaa onhan tunnit ja minuutit kaksi numeroa ja korjaa ne jos ei ole
+            // 00 ja 00
+            const hh = String(hours).padStart(2, '0'); 
             const mm = String(minutes).padStart(2, '0');
             slots.push(`${hh}:${mm}`);
-            minutes += 60; // 1-hour slots
+            hours += incrementHours;
+            minutes += incrementMinutes;
             if (minutes >= 60) {
                 hours += 1;
                 minutes = 0;

@@ -1,5 +1,5 @@
 import { getToken, clearToken } from "./config/auth.js";
-const API_BASE_URL = "http://localhost/Group-project-/backend/router/main.php";
+const API_BASE_URL = "http://localhost/group-project/Group-project-/backend/router/main.php";
 
 async function apiRequest(endpoint, options = {}) {
   const token = getToken();
