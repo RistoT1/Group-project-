@@ -7,14 +7,14 @@
     <link rel="stylesheet" type="text/css" href="../styles/pages/signin.css">
     <link rel="stylesheet" href="../styles/root.css">
     <link rel="stylesheet" href="../styles/pages/adminDashboard.css">
-    <title>Varauskatsaus</title>
+    <title>Luokkahuoneet</title>
 </head>
 
 <body>
     <header class="admin-header">
         <div class="header-left">
-            <h1>Varauskatsaus</h1>
-            <p class="subtitle">Tarkastele ja hallinnoi luokkavarausten tilaa</p>
+            <h1>Luokkahuoneet</h1>
+            <p class="subtitle">Tarkastele luokkahuoneita</p>
         </div>
         <div class="header-right">
             <button class="btn btn-outline">Kirjaudu ulos</button>
@@ -26,8 +26,8 @@
             <nav>
                 <ul>
                     <li><a href="adminDashboard.php">Käyttäjät</a></li>
-                    <li><a href="AdminLuokat.php">Luokkahuoneet</a></li>
-                    <li><a href="AdminVaraus.php" class="active">Varauskatsaus</a></li>
+                    <li><a href="AdminLuokat.php" class="active">Luokkahuoneet</a></li>
+                    <li><a href="AdminVaraus.php">Varauskatsaus</a></li>
                 </ul>
             </nav>
         </aside>
@@ -37,24 +37,27 @@
                 <div class="actions-row">
                     <div class="search-wrap">
                         <input type="search" name="q" placeholder="Hae varausta" aria-label="Hae varausta">
+</script>
+<script type="module" src="../scripts/pages/ClassListPage.js"></script>
+<script type="module" src="../scripts/pages/adminActions.js"></script>
                     </div>
                     <div class="action-buttons">
-                        <button class="btn btn-primary">+ Lisää Uusi varaus</button>
+                        <button class="btn btn-primary">+ Lisää Uusi Luokka</button>
                     </div>
                 </div>
 
                 <div class="cards-row">
                     <div class="card">
-                        <div class="card-title">Kaikki varaukset</div>
-                        <div class="card-value">342</div>
+                        <div class="card-title">Kaikki Luokat</div>
+                        <div class="card-value">25 </div>
                     </div>
                     <div class="card">
                         <div class="card-title">Tänään</div>
-                        <div class="card-value">18</div>
+                        <div class="card-value">4</div>
                     </div>
                     <div class="card">
-                        <div class="card-title">Vapaat luokat</div>
-                        <div class="card-value">6</div>
+                        <div class="card-title">Käytössä olevat luokat</div>
+                        <div class="card-value">14</div>
                     </div>
                 </div>
 
@@ -75,7 +78,10 @@
                                 <td>13.11.2025 10:00 - 12:00</td>
                                 <td>Maija Meikäläinen</td>
                                 <td>Hyväksytty</td>
-                                <td><button class="btn btn-small">Näytä</button></td>
+                                <td>
+                                    <button class="btn btn-small btn-edit" data-type="luokka" data-id="1">Muokkaa</button>
+                                    <button class="btn btn-small btn-delete" data-type="luokka" data-id="1">Poista</button>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
