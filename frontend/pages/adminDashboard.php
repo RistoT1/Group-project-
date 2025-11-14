@@ -19,7 +19,7 @@
             <nav>
                 <ul>
                     <li><a href="adminDashboard.php" class="active">Käyttäjät</a></li>
-                    <li><a href="#">Luokkahuoneet</a></li>
+                    <li><a href="AdminLuokat.php">Luokkahuoneet</a></li>
                     <li><a href="AdminVaraus.php">Varauskatsaus</a></li>
                 </ul>
             </nav>
@@ -67,7 +67,10 @@
                             <td>esimerkki@example.com</td>
                             <td>Opettaja</td>
                             <td>2 päivää sitten</td>
-                            <td><button class="btn btn-small">Muokkaa</button></td>
+                            <td>
+                                <button class="btn btn-small btn-edit" data-type="user" data-id="1">Muokkaa</button>
+                                <button class="btn btn-small btn-delete" data-type="user" data-id="1">Poista</button>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -78,4 +81,5 @@
 
 </body>
 <script type="module" src="../scripts/pages/ClassListPage.js"></script>
+<script type="module" src="../scripts/pages/adminActions.js"></script>
 </html>
