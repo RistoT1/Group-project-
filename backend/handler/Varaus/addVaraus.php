@@ -1,12 +1,16 @@
 <?php
-function addVaraus($pdo, $input)
+function addVaraus($pdo, $input, $decodedToken)
 {
-    if (empty($input['KayttajaID']) || empty($input['LuokkaID'])) {
-        return ["success" => false, "message" => "KayttajaID ja LuokkaID vaaditaan"];
+    $KayttajaID = (int) $decodedToken->sub;
+
+
+    // Keep other input validation
+    $LuokkaID = (int) ($input['LuokkaID'] ?? 0);
+    if ($LuokkaID <= 0) {
+        return ["success" => false, "message" => "LuokkaID vaaditaan"];
     }
 
-    $KayttajaID = (int) $input['KayttajaID'];
-    $LuokkaID = (int) $input['LuokkaID'];
+    // Other fields
     $Paivamaara = trim($input['Paivamaara'] ?? '');
     $AloitusAika = trim($input['AloitusAika'] ?? '');
     $LopetusAika = trim($input['LopetusAika'] ?? '');
