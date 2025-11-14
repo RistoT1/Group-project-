@@ -6,20 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="../styles/pages/signin.css">
     <link rel="stylesheet" href="../styles/root.css">
+     <link rel="stylesheet" href="../styles/components/navbar.css">
     <link rel="stylesheet" href="../styles/pages/adminDashboard.css">
     <title>Käyttäjien hallinta</title>
 </head>
 
 <body>
-    <header class="admin-header">
-        <div class="header-left">
-            <h1>Käyttäjien hallinta</h1>
-            <p class="subtitle">Hallinnoi käyttäjiä, rooleja ja oikeuksia</p>
-        </div>
-        <div class="header-right">
-            <button class="btn btn-outline">Kirjaudu ulos</button>
-        </div>
-    </header>
+    <?php include '../components/navbar.php'; ?>
 
     <main class="admin-container">
         <aside class="admin-sidebar">

@@ -113,3 +113,18 @@ export const getKayttajaVaraukset = async() => {
         throw error;
     }
 }
+
+export const ping = async () => {
+    const payload = {
+        Headers: {
+            "Content-Type": "application/json",
+        },
+    };
+    try {
+        const response = await apiRequest("?ping=true", payload);
+        return response.data;
+    } catch (error) {
+        console.error("Virhe luokkien lataamisessa:", error);
+        throw error;
+    }
+}

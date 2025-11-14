@@ -7,19 +7,12 @@
     <link rel="stylesheet" type="text/css" href="../styles/pages/signin.css">
     <link rel="stylesheet" href="../styles/root.css">
     <link rel="stylesheet" href="../styles/pages/adminDashboard.css">
+     <link rel="stylesheet" href="../styles/components/navbar.css">
     <title>Varauskatsaus</title>
 </head>
 
 <body>
-    <header class="admin-header">
-        <div class="header-left">
-            <h1>Varauskatsaus</h1>
-            <p class="subtitle">Tarkastele ja hallinnoi luokkavarausten tilaa</p>
-        </div>
-        <div class="header-right">
-            <button class="btn btn-outline">Kirjaudu ulos</button>
-        </div>
-    </header>
+    <?php include '../components/navbar.php'; ?>
 
     <main class="admin-container">
         <aside class="admin-sidebar">

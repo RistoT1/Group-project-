@@ -35,6 +35,7 @@ class classListPage {
             this.Luokat = classes;
             this.renderClasses(classes);
             this.takenTimes = takenTimes;
+            this.applyFilters();
         } catch (error) {
             console.error("Virhe datan lataamisessa:", error);
             this.showError("Tietojen lataus epäonnistui");
@@ -68,13 +69,17 @@ class classListPage {
     applyFilters() {
         const building = this.DOM.buildingSelect.value.trim();
         let capacity = parseInt(this.DOM.capacitySelect.value.trim(), 10);
-        const startTime = this.DOM.startTimeInput.value.trim();
-        const endTime = this.DOM.endTimeInput.value.trim();
+        const now = new Date();
+        const pad = (n) => n.toString().padStart(2, '0');
+
+        const currentTime = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+        const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000);
+        const endTimeDefault = `${pad(oneHourLater.getHours())}:${pad(oneHourLater.getMinutes())}`;
+
+        const startTime = this.DOM.startTimeInput.value.trim() || currentTime;
+        const endTime = this.DOM.endTimeInput.value.trim() || endTimeDefault;
         const date = this.DOM.dateInput.value.trim() || new Date().toISOString().split('T')[0];
 
-        console.log("Filters:", { building, capacity, startTime, endTime, date });
-
-        // Helper function to normalize time format (add :00 seconds if missing)
         const normalizeTime = (time) => {
             if (!time) return '';
             if (time.split(':').length === 3) return time;
@@ -84,35 +89,52 @@ class classListPage {
         const normalizedStartTime = normalizeTime(startTime);
         const normalizedEndTime = normalizeTime(endTime);
 
-        // If capacity is 0 or NaN, ignore it
         if (isNaN(capacity) || capacity === 0) capacity = null;
 
-        // Filter classes
         const filtered = this.Luokat.filter(luokka => {
 
-            if (building && building !== "all" && luokka.Sijainti.charAt(0) !== building) return false;
+            // building filter
+            if (building && building !== "all" && luokka.Sijainti.charAt(0) !== building)
+                return false;
 
-            // Filter by capacity (only if capacity is specified)
-            if (capacity && luokka.Kapasiteetti < capacity) return false;
+            // capacity filter
+            if (capacity && luokka.Kapasiteetti < capacity)
+                return false;
 
-            // Filter by availability if start and end times are provided
-            if (normalizedStartTime && normalizedEndTime) {
-                const conflicting = this.takenTimes.some(reservation => {
-                    return reservation.LuokkaID === luokka.LuokkaID &&
-                        reservation.Paivamaara === date &&
-                        !(
-                            normalizedEndTime <= reservation.AloitusAika ||
-                            normalizedStartTime >= reservation.LopetusAika
-                        );
-                });
-                if (conflicting) return false;
-            }
+            // time conflict filter
+            const conflicting = this.takenTimes.some(reservation => {
+                const tila = (reservation.Tila || "").trim().toLowerCase();
 
-            return true; // Passed all filters
+                // Ignore cancelled
+                if (tila === "peruttu") return false;
+
+                // Ignore invalid dates
+                if (!reservation.Paivamaara || reservation.Paivamaara === "0000-00-00") return false;
+
+                // Ignore zero-length or broken reservations
+                if (reservation.AloitusAika >= reservation.LopetusAika) return false;
+
+                // Check same class and date
+                if (reservation.LuokkaID !== luokka.LuokkaID) return false;
+                if (reservation.Paivamaara !== date) return false;
+
+                // Check overlapping
+                return !(
+                    normalizedEndTime <= reservation.AloitusAika ||
+                    normalizedStartTime >= reservation.LopetusAika
+                );
+            });
+
+
+
+            if (conflicting) return false;
+
+            return true;
         });
-        console.log("filtered", filtered);
+
         this.renderClasses(filtered);
     }
+
 
 
     renderClasses(classes) {

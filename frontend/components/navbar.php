@@ -32,4 +32,4 @@ $currentPage = basename($_SERVER['PHP_SELF']);
     </div>
 </nav>
 
-<script src="../scripts/components/nav.js"></script>
+<script type="module" src="../scripts/components/nav.js"></script>

@@ -116,9 +116,7 @@ class Luokka {
             <div class="div2">
                 <div class="info-container">
                     <h3>Tiedot ja varusteet</h3>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem aperiam, impedit placeat
-                            maiores ipsam dolores aspernatur tenetur officiis esse beatae non ab nesciunt numquam?
-                            Provident, fugit amet. Repellendus, dignissimos corrupti?</p>
+                    <p>Tilava ja valoisa opetustila, jossa on suuret ikkunat ja rauhallinen tunnelma. Hyvä luonnonvalo tekee tilasta miellyttävän ja edistää keskittymistä. Luokan akustiikka on toimiva, ja ympäristö soveltuu hyvin erilaisiin oppimistilanteisiin. Tilassa on selkeä pohjaratkaisu, joka tukee sujuvaa liikkumista ja työskentelyä.</p>
                     <p><i class="fa-solid fa-location-dot"></i> Sijainti: ${luokka.Sijainti}</p>
                     <p><i class="fa-solid fa-people-group"></i> Kapasiteetti: ${luokka.Kapasiteetti}</p>
                     <div class="equipments">

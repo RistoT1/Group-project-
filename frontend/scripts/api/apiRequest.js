@@ -22,7 +22,6 @@ async function apiRequest(endpoint, options = {}) {
     const response = await fetch(API_BASE_URL + endpoint, fetchOptions);
     if (response.status === 401) {
       clearToken();
-      alert("Session expired, please log in again.");
       window.location.href = "./signin.php";
       throw new Error("Unauthorized", response);
     }
