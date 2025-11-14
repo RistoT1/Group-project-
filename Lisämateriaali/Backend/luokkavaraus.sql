@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 12.11.2025 klo 05:45
+-- Generation Time: 14.11.2025 klo 09:16
 -- Palvelimen versio: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -102,7 +102,34 @@ CREATE TABLE `varaukset` (
 
 INSERT INTO `varaukset` (`VarausID`, `KayttajaID`, `LuokkaID`, `Paivamaara`, `AloitusAika`, `LopetusAika`, `Tarkoitus`, `Tila`) VALUES
 (5, 2, 2, '2025-11-11', '11:20:00', '12:00:00', 'LEipa', 'peruttu'),
-(8, 2, 2, '2025-11-11', '11:20:00', '12:00:00', 'LEipa', 'varattu');
+(8, 2, 2, '2025-11-11', '11:20:00', '12:00:00', 'LEipa', 'varattu'),
+(9, 12, 2, '2025-11-11', '12:20:00', '13:00:00', 'LEipa', 'varattu'),
+(11, 12, 2, '2025-11-12', '12:30:00', '12:30:00', 'hehe', 'varattu'),
+(12, 12, 2, '2025-11-12', '16:30:00', '16:30:00', 'pek', 'varattu'),
+(13, 12, 2, '2025-11-12', '15:30:00', '15:30:00', 'pekka', 'varattu'),
+(14, 12, 2, '2025-11-12', '15:30:00', '15:30:00', 'pekka', 'varattu'),
+(15, 12, 2, '2025-11-12', '15:30:00', '15:30:00', 'pekka', 'varattu'),
+(16, 12, 2, '2025-11-12', '16:30:00', '16:30:00', 'd', 'varattu'),
+(17, 12, 2, '2025-11-13', '14:30:00', '15:30:00', 'leo', 'varattu'),
+(18, 12, 2, '2025-11-12', '15:30:00', '16:30:00', 'leo', 'varattu'),
+(19, 12, 2, '2025-11-11', '16:30:00', '17:30:00', 'leo', 'varattu'),
+(20, 12, 2, '2025-11-11', '15:30:00', '16:30:00', 'leo', 'varattu'),
+(21, 12, 2, '2025-11-13', '10:30:00', '11:30:00', 'oe', 'varattu'),
+(22, 12, 1, '2025-11-12', '15:30:00', '16:30:00', 'pekkaa', 'varattu'),
+(23, 12, 1, '2025-11-11', '11:30:00', '12:30:00', 'pekkaa', 'varattu'),
+(25, 12, 1, '2025-11-12', '16:30:00', '17:30:00', 'lautta', 'peruttu'),
+(26, 12, 2, '2025-11-11', '14:30:00', '15:30:00', 'Pekan matiikan koe', 'varattu'),
+(27, 12, 2, '2025-11-11', '09:30:00', '10:30:00', 'pekka', 'varattu'),
+(28, 12, 1, '2025-11-13', '09:30:00', '10:30:00', 'test', 'varattu'),
+(32, 12, 1, '2025-11-14', '10:30:00', '11:30:00', 'das', 'peruttu'),
+(33, 12, 1, '2025-11-14', '11:30:00', '12:30:00', 'das', 'varattu'),
+(39, 12, 1, '2025-11-14', '12:30:00', '13:30:00', 'sad', 'varattu'),
+(40, 12, 1, '2025-11-14', '13:30:00', '14:30:00', 'sad', 'peruttu'),
+(41, 12, 1, '2025-11-14', '14:30:00', '15:30:00', 'sda', 'varattu'),
+(42, 12, 1, '2025-11-14', '16:30:00', '17:30:00', 'asd', 'varattu'),
+(43, 12, 1, '2025-11-14', '15:30:00', '16:30:00', 'sad', 'varattu'),
+(45, 12, 1, '2025-11-14', '08:30:00', '09:30:00', 'sad', 'varattu'),
+(46, 12, 1, '2025-11-14', '10:30:00', '11:30:00', 'sd', 'peruttu');
 
 --
 -- Indexes for dumped tables
@@ -150,7 +177,7 @@ ALTER TABLE `luokat`
 -- AUTO_INCREMENT for table `varaukset`
 --
 ALTER TABLE `varaukset`
-  MODIFY `VarausID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `VarausID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- Rajoitteet vedostauluille
